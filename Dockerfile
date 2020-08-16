@@ -51,6 +51,11 @@ ARG BUILD_DEPENDENCIES="              \
         libvncserver-dev              \
         libwebsockets-dev             \
         libwebp-dev                   \
+        libvorbis-dev                 \
+        libavcodec-dev                \
+        libavformat-dev               \
+        libavutil-dev                 \
+        libswscale-dev                \
         make"
 
 # Bring build environment up to date and install build dependencies
@@ -95,6 +100,10 @@ ARG RUNTIME_DEPENDENCIES="            \
         ghostscript                   \
         fonts-liberation              \
         fonts-dejavu                  \
+        libavcodec-dev                \
+                libavformat-dev               \
+                libavutil-dev                 \
+                libswscale-dev                \
         xfonts-terminus"
 
 # Copy build artifacts into this stage
@@ -125,7 +134,7 @@ EXPOSE 4822
 
 # Start guacd, listening on port 0.0.0.0:4822
 #
-# Note the path here MUST correspond to the value specified in the 
+# Note the path here MUST correspond to the value specified in the
 # PREFIX_DIR build argument.
 #
 CMD /usr/local/guacamole/sbin/guacd -b 0.0.0.0 -L $GUACD_LOG_LEVEL -f
