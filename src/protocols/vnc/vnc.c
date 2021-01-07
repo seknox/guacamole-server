@@ -154,8 +154,10 @@ rfbClient* guac_vnc_get_client(guac_client* client) {
 
     }
 
+#ifdef ENABLE_VNC_GENERIC_CREDENTIALS
     /* Authentication */
     rfb_client->GetCredential = guac_vnc_get_credentials;
+#endif
     
     /* Password */
     rfb_client->GetPassword = guac_vnc_get_password;
@@ -245,7 +247,8 @@ void* guac_vnc_client_thread(void* data) {
                 "and pausing for %d seconds.", settings->wol_wait_time);
         
         /* Send the Wake-on-LAN request. */
-        if (guac_wol_wake(settings->wol_mac_addr, settings->wol_broadcast_addr))
+        if (guac_wol_wake(settings->wol_mac_addr, settings->wol_broadcast_addr,
+                settings->wol_udp_port))
             return NULL;
         
         /* If wait time is specified, sleep for that amount of time. */
@@ -258,9 +261,6 @@ void* guac_vnc_client_thread(void* data) {
         guac_client_log(client, GUAC_LOG_INFO, "Using non-standard VNC "
                 "clipboard encoding: '%s'.", settings->clipboard_encoding);
     }
-
-    /* Ensure connection is kept alive during lengthy connects */
-    guac_socket_require_keep_alive(client->socket);
 
     /* Set up libvncclient logging */
     rfbClientLog = guac_vnc_client_log_info;
